@@ -50,7 +50,7 @@ class MainPage(webapp.RequestHandler):
         c_brand=str(brand.find(text=True))
         c_address=str(address).replace('<br />', ' ').replace('<td class="td4">','').replace('</td>', '').strip()            
         c_phone=str(phone.find(text=True)).replace(')', ') ')
-        c_price=str(price.find(text=True)).replace('&nbsp;', ' ')
+        c_price=str(price.find(text=True)).replace('&nbsp;', '')
         c_time=str(time.find(text=True))
 
         # Check to see if the latest update has already been logged.
@@ -82,7 +82,7 @@ class MainPage(webapp.RequestHandler):
             # username page so that they can see their tweet worked.
             user = twitterapi.me()
             self.redirect('http://www.twitter.com/%s' % user.screen_name)
-            
+
         else:
             # Wah. No new update.
             self.response.out.write('nothing new')
