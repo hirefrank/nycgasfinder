@@ -1,0 +1,175 @@
+/* 
+body.x { font-family: Courier New, monospaced; }
+body {font-family: Helvetica; }
+a.light { color: #AAA; text-decoration: none }
+a.light:hover { text-decoration: underline }
+*/
+
+body {
+    padding-top: 60px;
+    color: #333;
+}
+
+a {
+    color: #0192B5;
+}
+
+.navbar a.brand {
+  color: #fff;
+  text-shadow: none;
+}
+
+  .navbar .nav > li > a {
+      color: #ECECB6;
+  }
+
+  .navbar div > ul.nav .active > a {
+    background-color:rgba(0, 0, 0, 0.1);
+  }
+
+  .navbar div > ul.nav .active > a:hover {
+    background-color:rgba(0, 0, 0, 0.1);
+  }
+
+  .navbar-inner{
+      background-image: -webkit-linear-gradient(top, #d76313, #d35701);
+      background-image: -moz-linear-gradient(top, #d76313, #d35701);
+  }
+
+h4, h3, h2 {
+  font-weight: normal;
+  margin-bottom: 6px;
+}
+
+h3 {
+  font-size: 19.5px;
+}
+
+.main pre {
+  padding: 0;
+  margin: -10px 14px 28px 14px;
+  background-color: transparent;
+  border: 0;
+  -webkit-border-radius: 0;
+  -moz-border-radius: 0;
+  border-radius: 0;
+  word-break: normal;
+}
+
+.rail {
+  background-color: whiteSmoke;
+  -webkit-border-radius: 3px;
+  -moz-border-radius: 3px;
+  border-radius: 3px;
+}
+
+  .rail .following-wrapper {
+    margin: 0 0 20px 0;
+  }
+
+    .rail .following-wrapper h3 {
+      font-size: 12px;
+      font-weight: bold;
+      margin: 0 0 0 18px;
+      padding: 0;      
+      text-transform: uppercase;
+      color: #666;
+    }
+
+    .rail .following-wrapper h3.suggestions {
+      margin-top: -14px;
+    }
+
+    .rail .following-wrapper .name-wrapper {
+      padding: 0;
+      margin: 0 18px 18px 18px;
+      height: none;
+      position: static;
+    }
+
+     /* stop the float */
+    .rail .following-wrapper .name-wrapper br {
+      clear: left;
+    }
+
+    .rail .following-wrapper .name-wrapper ul.name-card {
+      margin: 0;
+    } 
+
+      .rail .following-wrapper .name-wrapper ul.name-card li {
+        float: left;
+        list-style: none;
+      } 
+
+      .rail .following-wrapper .name-wrapper ul.name-card img {
+        position: static;
+        padding: 0 2px 2px 0;
+      } 
+
+  .rail .name-wrapper {
+    position: relative;
+    padding: 0;
+    margin: 20px 18px 2px 18px;
+  }
+
+  .rail .name-card {
+    margin: 8px 8px 8px 62px;
+  }
+
+  .rail .action {
+    margin: 3px 0 0 0;
+  }
+
+  .rail .name-card img {
+    width: 50px;
+    height: 50px;
+    position: absolute;
+    top: 0;
+    left: 0;
+    /*
+    -webkit-border-radius: 3px;
+    -moz-border-radius: 3px;
+    border-radius: 3px;
+    */
+  }
+
+  .rail .name {
+    font-size: 18px;
+    font-weight: bold;
+    padding: 0;
+    margin: 0;
+  }
+
+p.fine-print {
+  font-size: 11px;
+  margin-bottom: 10px;
+  margin-top:-10px;
+  color: #888;
+}
+
+.dropdown-menu li > a:hover,
+.dropdown-menu .active > a,
+.dropdown-menu .active > a:hover {
+  color: #ffffff;
+  text-decoration: none;
+  background-color: #0192B5;
+}
+
+#footer p {
+  margin: 20px 0 40px;
+  font-size: 11px;
+  color: #999;
+}
+  
+  #footer p strong {
+    color: #444;
+    font-weight: normal;
+  }
+
+  #footer p a {
+    color: #888;
+  }
+
+  #footer p a:hover {
+    color: #444;
+  }

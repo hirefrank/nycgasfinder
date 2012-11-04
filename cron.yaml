@@ -1,0 +1,5 @@
+cron:
+- description: Gas check
+  url: /
+  schedule: every 1 minutes
+  timezone: America/New_York
