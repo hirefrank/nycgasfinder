@@ -33,7 +33,7 @@ class MainPage(webapp.RequestHandler):
     def get(self):
         self.response.headers['Content-Type'] = 'text/plain'
 
-        # Load the data feed in Beautiful Soup
+        # Load the data feed in Beautiful Soup.
         result = urlfetch.fetch(settings.FEED_URL)
         soup = BeautifulSoup(result.content)
 
@@ -49,38 +49,43 @@ class MainPage(webapp.RequestHandler):
         c_name=str(name.find(text=True))
         c_brand=str(brand.find(text=True))
         c_address=str(address).replace('<br />', ' ').replace('<td class="td4">','').replace('</td>', '').strip()            
-        c_phone=str(phone.find(text=True))
+        c_phone=str(phone.find(text=True)).replace(')', ') ')
         c_price=str(price.find(text=True)).replace('&nbsp;', ' ')
         c_time=str(time.find(text=True))
 
+        # Check to see if the latest update has already been logged.
         stationObj = Station.all().filter("time =", c_time).order('-date').fetch(1)
+
+        # If not, log it and then tweet it.
         if not stationObj:
             station = Station(name=c_name, brand=c_brand, address=c_address, phone=c_phone, price=c_price, time=c_time)
             station.put()
             message_body = str(c_time) + ": " + str(c_name) + " (" + str(c_brand) + ") " + str(c_address) + ", " + str(c_phone) + " - " + str(c_price) + " per gallon"
 
-            # Authenticate this app's credentials via OAuth
+            # Authenticate this app's credentials via OAuth.
             auth = tweepy.OAuthHandler(settings.CONSUMER_KEY, settings.CONSUMER_SECRET)
 
             # Set the credentials that we just verified and passed in.
             auth.set_access_token(settings.TOKEN_KEY, settings.TOKEN_SECRET)
 
-            # Authorize with the Twitter API via OAuth
+            # Authorize with the Twitter API via OAuth.
             twitterapi = tweepy.API(auth)
 
             # Update the user's twitter timeline with the tweeted text.
             twitterapi.update_status(message_body)
 
-            # Post a new status
-            # twitter API docs: https://dev.twitter.com/docs/api/1/post/statuses/update
+            # Post a new status.
+            # Twitter API docs: https://dev.twitter.com/docs/api/1/post/statuses/update
             print "updated status: %s" % message_body
             
             # Now we fetch the user information and redirect the user to their twitter
             # username page so that they can see their tweet worked.
             user = twitterapi.me()
             self.redirect('http://www.twitter.com/%s' % user.screen_name)
+            
         else:
-           self.response.out.write('nothing new')
+            # Wah. No new update.
+            self.response.out.write('nothing new')
 
 application = webapp.WSGIApplication([('/', MainPage)],
                                      debug=True)
