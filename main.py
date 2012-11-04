@@ -29,6 +29,12 @@ from google.appengine.api import mail
 from BeautifulSoup import BeautifulSoup
 from model import *
 
+from datetime import *
+from dateutil.tz import *
+from dateutil.relativedelta import *
+import dateutil.parser as dparser
+import calendar
+
 class MainPage(webapp.RequestHandler):
     def get(self):
         self.response.headers['Content-Type'] = 'text/plain'
@@ -56,31 +62,41 @@ class MainPage(webapp.RequestHandler):
             c_price=str(price[i].find(text=True)).replace('&nbsp;', '')
             c_time=str(time[i].find(text=True))
 
-            # Check to see if the latest update has already been logged.
-            stationObj = Station.all().filter("time =", c_time).order('-date').fetch(1)
+            # Determine threshold. Only iterate for updates in the last 6 minutes.
+            # hours is a complete hack because I couldn't figure out the timezone madness.
+            threshold = datetime.now()-relativedelta(hours=5, minutes=6)
 
-            # If not, log it and then tweet it.
-            if not stationObj:
-                station = Station(name=c_name, brand=c_brand, address=c_address, phone=c_phone, price=c_price, time=c_time)
-                station.put()
-                message_body = str(c_time) + ": " + str(c_name) + " (" + str(c_brand) + ") " + str(c_address) + ", " + str(c_phone) + " - " + str(c_price) + " per gallon"
+            if threshold <= dparser.parse(c_time):
+                # Check to see if the latest update has already been logged.
+                stationObj = Station.all().filter("time =", c_time).order('-date').fetch(1)
 
-                # Authenticate this app's credentials via OAuth.
-                auth = tweepy.OAuthHandler(settings.CONSUMER_KEY, settings.CONSUMER_SECRET)
+                # If not, log it and then tweet it.
+                if not stationObj:
+                    station = Station(name=c_name, brand=c_brand, address=c_address, phone=c_phone, price=c_price, time=c_time)
+                    station.put()
+                    message_body = str(c_time) + ": " + str(c_name) + " (" + str(c_brand) + ") " + str(c_address) + ", " + str(c_phone) + " - " + str(c_price) + " per gallon"
 
-                # Set the credentials that we just verified and passed in.
-                auth.set_access_token(settings.TOKEN_KEY, settings.TOKEN_SECRET)
+                    # Authenticate this app's credentials via OAuth.
+                    auth = tweepy.OAuthHandler(settings.CONSUMER_KEY, settings.CONSUMER_SECRET)
 
-                # Authorize with the Twitter API via OAuth.
-                twitterapi = tweepy.API(auth)
+                    # Set the credentials that we just verified and passed in.
+                    auth.set_access_token(settings.TOKEN_KEY, settings.TOKEN_SECRET)
 
-                # Update the user's twitter timeline with the tweeted text.
-                twitterapi.update_status(message_body)
-                self.response.out.write(message_body)
+                    # Authorize with the Twitter API via OAuth.
+                    twitterapi = tweepy.API(auth)
 
-            else:
-                # Wah. No new update.
-                self.response.out.write(' none ')
+                    # Update the user's twitter timeline with the tweeted text.
+                    # Limit the length to 140 characters
+                    twitterapi.update_status(message_body[:140])
+                    self.response.out.write(message_body[:140])
+                    self.response.out.write(', ')
+
+                else:
+                    # Wah. No new update.
+                    self.response.out.write('update already added, ')
+
+            else: 
+                break
 
 application = webapp.WSGIApplication([('/', MainPage)],
                                      debug=True)

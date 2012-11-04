@@ -1,7 +1,8 @@
 application: bkgasfinder
-version: 5
-runtime: python
+version: 6
+runtime: python27
 api_version: 1
+threadsafe: false
 
 handlers:
 - url: .*
