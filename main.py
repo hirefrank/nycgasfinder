@@ -33,9 +33,11 @@ class MainPage(webapp.RequestHandler):
     def get(self):
         self.response.headers['Content-Type'] = 'text/plain'
 
+        # Load the data feed in Beautiful Soup
         result = urlfetch.fetch(settings.FEED_URL)
         soup = BeautifulSoup(result.content)
 
+        # Start scraping. This is pretty ugly.
         name = soup.find("td", { "class" : "td2" })
         brand = soup.find("td", { "class" : "td3" })
         address = soup.find("td", { "class" : "td4" })
@@ -43,32 +45,33 @@ class MainPage(webapp.RequestHandler):
         price = soup.find("td", { "class" : "td6" })
         time = soup.find("td", { "class" : "td7" })
 
+        # Clean up data, again pretty ugly.
         c_name=str(name.find(text=True))
         c_brand=str(brand.find(text=True))
         c_address=str(address).replace('<br />', ' ').replace('<td class="td4">','').replace('</td>', '').strip()            
         c_phone=str(phone.find(text=True))
-        c_price=str(price.find(text=True))
+        c_price=str(price.find(text=True)).replace('&nbsp;', ' ')
         c_time=str(time.find(text=True))
 
         stationObj = Station.all().filter("time =", c_time).order('-date').fetch(1)
         if not stationObj:
             station = Station(name=c_name, brand=c_brand, address=c_address, phone=c_phone, price=c_price, time=c_time)
             station.put()
-            message_body = str(c_time) + ": " + str(c_name) + " (" + str(c_brand) + ") " + str(c_address) + ", " + str(c_phone)
+            message_body = str(c_time) + ": " + str(c_name) + " (" + str(c_brand) + ") " + str(c_address) + ", " + str(c_phone) + " - " + str(c_price) + " per gallon"
 
-            # Here we authenticate this app's credentials via OAuth
+            # Authenticate this app's credentials via OAuth
             auth = tweepy.OAuthHandler(settings.CONSUMER_KEY, settings.CONSUMER_SECRET)
 
-            # Here we set the credentials that we just verified and passed in.
+            # Set the credentials that we just verified and passed in.
             auth.set_access_token(settings.TOKEN_KEY, settings.TOKEN_SECRET)
 
-            # Here we authorize with the Twitter API via OAuth
+            # Authorize with the Twitter API via OAuth
             twitterapi = tweepy.API(auth)
 
-            # Here we update the user's twitter timeline with the tweeted text.
+            # Update the user's twitter timeline with the tweeted text.
             twitterapi.update_status(message_body)
 
-            # post a new status
+            # Post a new status
             # twitter API docs: https://dev.twitter.com/docs/api/1/post/statuses/update
             print "updated status: %s" % message_body
             
