@@ -19,6 +19,7 @@ import logging
 import sys
 sys.path.insert(0, 'tweepy.zip')
 import tweepy
+import settings
 
 from google.appengine.ext import webapp
 from google.appengine.ext.webapp.util import run_wsgi_app
@@ -32,8 +33,7 @@ class MainPage(webapp.RequestHandler):
     def get(self):
         self.response.headers['Content-Type'] = 'text/plain'
 
-        url = 'http://rrtexternalweb.wrightexpress.com/neo_ww/site_locator/list.action?sortByValue=LAST_TRAN_TIME&sortDirection=DESCENDING&latitude=40.6945036&longitude=-73.9565551&mapType=Hybrid&mapZoom=12&sorting=true&address=&city=&state=&zip=11205&fuelType=Unleaded+Regular&radius=5'
-        result = urlfetch.fetch(url)
+        result = urlfetch.fetch(settings.FEED_URL)
         soup = BeautifulSoup(result.content)
 
         name = soup.find("td", { "class" : "td2" })
@@ -56,18 +56,11 @@ class MainPage(webapp.RequestHandler):
             station.put()
             message_body = str(c_time) + ": " + str(c_name) + " (" + str(c_brand) + ") " + str(c_address) + ", " + str(c_phone)
 
-            # these tokens are necessary for user authentication
-            # (created within the twitter developer API pages)
-            consumer_key = "xxxxx"
-            consumer_secret = "xxxxx"
-            token_key = "xxxxx"
-            token_secret = "xxxxx"
-
             # Here we authenticate this app's credentials via OAuth
-            auth = tweepy.OAuthHandler(consumer_key, consumer_secret)
+            auth = tweepy.OAuthHandler(settings.CONSUMER_KEY, settings.CONSUMER_SECRET)
 
             # Here we set the credentials that we just verified and passed in.
-            auth.set_access_token(token_key, token_secret)
+            auth.set_access_token(settings.TOKEN_KEY, settings.TOKEN_SECRET)
 
             # Here we authorize with the Twitter API via OAuth
             twitterapi = tweepy.API(auth)
