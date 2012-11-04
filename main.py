@@ -38,54 +38,49 @@ class MainPage(webapp.RequestHandler):
         soup = BeautifulSoup(result.content)
 
         # Start scraping. This is pretty ugly.
-        name = soup.find("td", { "class" : "td2" })
-        brand = soup.find("td", { "class" : "td3" })
-        address = soup.find("td", { "class" : "td4" })
-        phone = soup.find("td", { "class" : "td5" })
-        price = soup.find("td", { "class" : "td6" })
-        time = soup.find("td", { "class" : "td7" })
+        name = soup.findAll("td", { "class" : "td2" })
+        brand = soup.findAll("td", { "class" : "td3" })
+        address = soup.findAll("td", { "class" : "td4" })
+        phone = soup.findAll("td", { "class" : "td5" })
+        price = soup.findAll("td", { "class" : "td6" })
+        time = soup.findAll("td", { "class" : "td7" })
 
-        # Clean up data, again pretty ugly.
-        c_name=str(name.find(text=True))
-        c_brand=str(brand.find(text=True))
-        c_address=str(address).replace('<br />', ' ').replace('<td class="td4">','').replace('</td>', '').strip()            
-        c_phone=str(phone.find(text=True)).replace(')', ') ')
-        c_price=str(price.find(text=True)).replace('&nbsp;', '')
-        c_time=str(time.find(text=True))
+        # Loop through the data. This is really inefficient.
+        for i in range(len(name)):
 
-        # Check to see if the latest update has already been logged.
-        stationObj = Station.all().filter("time =", c_time).order('-date').fetch(1)
+            # Clean up data, again pretty ugly.
+            c_name=str(name[i].find(text=True))
+            c_brand=str(brand[i].find(text=True))
+            c_address=str(address[i]).replace('<br />', ' ').replace('<td class="td4">','').replace('</td>', '').strip()            
+            c_phone=str(phone[i].find(text=True)).replace(')', ') ')
+            c_price=str(price[i].find(text=True)).replace('&nbsp;', '')
+            c_time=str(time[i].find(text=True))
 
-        # If not, log it and then tweet it.
-        if not stationObj:
-            station = Station(name=c_name, brand=c_brand, address=c_address, phone=c_phone, price=c_price, time=c_time)
-            station.put()
-            message_body = str(c_time) + ": " + str(c_name) + " (" + str(c_brand) + ") " + str(c_address) + ", " + str(c_phone) + " - " + str(c_price) + " per gallon"
+            # Check to see if the latest update has already been logged.
+            stationObj = Station.all().filter("time =", c_time).order('-date').fetch(1)
 
-            # Authenticate this app's credentials via OAuth.
-            auth = tweepy.OAuthHandler(settings.CONSUMER_KEY, settings.CONSUMER_SECRET)
+            # If not, log it and then tweet it.
+            if not stationObj:
+                station = Station(name=c_name, brand=c_brand, address=c_address, phone=c_phone, price=c_price, time=c_time)
+                station.put()
+                message_body = str(c_time) + ": " + str(c_name) + " (" + str(c_brand) + ") " + str(c_address) + ", " + str(c_phone) + " - " + str(c_price) + " per gallon"
 
-            # Set the credentials that we just verified and passed in.
-            auth.set_access_token(settings.TOKEN_KEY, settings.TOKEN_SECRET)
+                # Authenticate this app's credentials via OAuth.
+                auth = tweepy.OAuthHandler(settings.CONSUMER_KEY, settings.CONSUMER_SECRET)
 
-            # Authorize with the Twitter API via OAuth.
-            twitterapi = tweepy.API(auth)
+                # Set the credentials that we just verified and passed in.
+                auth.set_access_token(settings.TOKEN_KEY, settings.TOKEN_SECRET)
 
-            # Update the user's twitter timeline with the tweeted text.
-            twitterapi.update_status(message_body)
+                # Authorize with the Twitter API via OAuth.
+                twitterapi = tweepy.API(auth)
 
-            # Post a new status.
-            # Twitter API docs: https://dev.twitter.com/docs/api/1/post/statuses/update
-            print "updated status: %s" % message_body
-            
-            # Now we fetch the user information and redirect the user to their twitter
-            # username page so that they can see their tweet worked.
-            user = twitterapi.me()
-            self.redirect('http://www.twitter.com/%s' % user.screen_name)
+                # Update the user's twitter timeline with the tweeted text.
+                twitterapi.update_status(message_body)
+                self.response.out.write(message_body)
 
-        else:
-            # Wah. No new update.
-            self.response.out.write('nothing new')
+            else:
+                # Wah. No new update.
+                self.response.out.write(' none ')
 
 application = webapp.WSGIApplication([('/', MainPage)],
                                      debug=True)
