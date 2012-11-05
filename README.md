@@ -11,7 +11,7 @@ Gas stations in a 10 mile radius of zip code 11201.
 -------------
 Gas stations in a 10 mile radius of zip code 07922. 
 
-What else
+Details
 -------------
 
 Data is from wrightexpress.com. I use BeautifulSoup for the HTML scraping and Tweepy's Twitter API Library. There is not much else to the code and it is currently running on AppEngine. 
