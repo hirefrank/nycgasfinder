@@ -11,6 +11,22 @@ Gas stations in a 10 mile radius of zip code 11201.
 -------------
 Gas stations in a 10 mile radius of zip code 07922. 
 
+@bronxgasfinder
+-------------
+Gas stations in a 10 mile radius of zip code 10469. 
+
+@wcgasfinder
+-------------
+Gas stations in a 10 mile radius of zip code 10514. 
+
+@nassaugasfinder
+-------------
+Gas stations in a 7 mile radius of zip code 11501. 
+
+@queensgasfinder
+-------------
+Gas stations in a 10 mile radius of zip code 11433. 
+
 Details
 -------------
 
