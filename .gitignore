@@ -4,3 +4,4 @@
 *.pyc
 .settings
 settings.py
+app.yaml

@@ -2,6 +2,7 @@ from google.appengine.api import users
 from google.appengine.ext import db
 
 class Station(db.Model):
+    account = db.StringProperty(default="nycgasfinder")
     name = db.StringProperty()
     brand = db.StringProperty()
     address = db.StringProperty()

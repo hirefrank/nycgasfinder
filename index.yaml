@@ -12,6 +12,13 @@ indexes:
 
 - kind: Station
   properties:
+  - name: account
+  - name: time
+  - name: date
+    direction: desc
+
+- kind: Station
+  properties:
   - name: time
   - name: date
     direction: desc
