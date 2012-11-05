@@ -1,0 +1,11 @@
+# Rename to app.yaml
+
+application: xxxxxxxx
+version: 7
+runtime: python27
+api_version: 1
+threadsafe: false
+
+handlers:
+- url: .*
+  script: main.py
