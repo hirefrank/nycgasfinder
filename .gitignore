@@ -5,3 +5,4 @@
 .settings
 settings.py
 app.yaml
+cron.yaml

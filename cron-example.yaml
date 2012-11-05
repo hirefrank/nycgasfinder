@@ -1,0 +1,7 @@
+# Rename to cron.yaml
+
+cron:
+- description: Gas check for nycgasfinder
+  url: /?location=nycgasfinder
+  schedule: every 3 minutes
+  timezone: America/New_York

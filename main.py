@@ -39,9 +39,13 @@ class MainPage(webapp.RequestHandler):
     def get(self):
         self.response.headers['Content-Type'] = 'text/plain'
 
-        accounts = settings.ACCOUNTS
-        for account, account_info in accounts.iteritems():
-            ACCOUNT = account
+        ACCOUNT = self.request.get('location')
+
+        if ACCOUNT:
+
+            accounts = settings.ACCOUNTS
+            account_info = accounts[self.request.get('location')]
+        
             ZIPCODE = account_info['zipcode']
             RADIUS = account_info['radius']
             FEED_URL = settings.BASE_URL + '&zip=' + ZIPCODE + '&radius=' + RADIUS 
@@ -76,9 +80,9 @@ class MainPage(webapp.RequestHandler):
                 c_price=str(price[i].find(text=True)).replace('&nbsp;', '')
                 c_time=str(time[i].find(text=True))
 
-                # Determine threshold. Only iterate for updates in the last 6 minutes.
+                # Determine threshold. Only iterate for updates in the last 7 minutes.
                 # hours is a complete hack because I couldn't figure out the timezone madness.
-                threshold = datetime.now()-relativedelta(hours=5, minutes=6)
+                threshold = datetime.now()-relativedelta(hours=5, minutes=7)
 
                 if threshold <= dparser.parse(c_time):
                     # Check to see if the latest update has already been logged.
