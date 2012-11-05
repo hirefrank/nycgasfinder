@@ -27,6 +27,11 @@ Gas stations in a 7 mile radius of zip code 11501.
 -------------
 Gas stations in a 10 mile radius of zip code 11433. 
 
+@ligasfinder
+-------------
+Gas stations in a 20 mile radius of zip code 11779. 
+
+
 Details
 -------------
 
