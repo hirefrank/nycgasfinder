@@ -51,7 +51,7 @@ class MainPage(webapp.RequestHandler):
             TOKEN_SECRET = account_info['token_secret']
 
             self.response.out.write(ACCOUNT)
-            self.response.out.write('-----------')
+            self.response.out.write(' ----------- ')
 
             # Load the data feed in Beautiful Soup.
             result = urlfetch.fetch(FEED_URL)
