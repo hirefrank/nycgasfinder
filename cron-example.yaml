@@ -1,5 +1,5 @@
 # Rename to cron.yaml
-
+# Add an entry for each location
 cron:
 - description: Gas check for nycgasfinder
   url: /?location=nycgasfinder
